@@ -1,0 +1,6 @@
+# Ignore data
+data/*
+# Ignore CSV and XLSX files
+*.csv
+*.xlsx
+ 
