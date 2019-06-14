@@ -59,7 +59,6 @@ func StoreActions(f *excelize.File, a [][]string) {
 		for j, v := range r {
 			loc, _ := excelize.CoordinatesToCellName(j+1, i+1)
 			f.SetCellValue(Actions, loc, v)
-
 		}
 	}
 }
