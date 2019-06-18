@@ -68,12 +68,26 @@ func StoreActions(f *excelize.File, a [][]string) {
 //column in the supproter information is not inserted.  That is the action key.
 //The action key is used to compute the column offset where the cell should go.
 func StoreActionTakers(f *excelize.File, a [][]string, keys []string, offsets map[string]int) {
+	prevSupKey := ""
+	row := 0
 	for i, r := range a {
-		for j, v := range r {
-			loc, _ := excelize.CoordinatesToCellName(j+1, i+1)
-			f.SetCellValue(ActionTakers, loc, v)
-		}
 		width := len(r)
+		key := r[width-2]
+		count := r[width-1]
+		//Not storing key or count in the spreadsheet.
+		width -= 2
+		if r[0] != prevSupKey {
+			// Row changes when the supporter_KEY changes in the
+			//action takers data.
+			row++
+			prevSupKey = r[0]
+			for j, v := range r {
+				if j < width {
+					loc, _ := excelize.CoordinatesToCellName(j+1, row+1)
+					f.SetCellValue(ActionTakers, loc, v)
+				}
+			}
+		}
 		if i == 0 {
 			for j, v := range keys {
 				if j == 0 {
@@ -82,18 +96,16 @@ func StoreActionTakers(f *excelize.File, a [][]string, keys []string, offsets ma
 				//First action key overwrites the count at the end
 				//of the action taker data.
 				k := width - 1 + j
-				loc, _ := excelize.CoordinatesToCellName(k+1, i+1)
+				loc, _ := excelize.CoordinatesToCellName(k+1, row+1)
 				f.SetCellValue(ActionTakers, loc, v)
 			}
 		} else {
-			key := r[width-2]
-			count := r[width-1]
 			d, ok := offsets[key]
 			if ok {
 				//First action key overwrites the count at the end
 				//of the action taker data.
 				j := width - 1 + d
-				loc, _ := excelize.CoordinatesToCellName(j+1, i+1)
+				loc, _ := excelize.CoordinatesToCellName(j+1, row+1)
 				f.SetCellValue(ActionTakers, loc, count)
 			} else {
 				fmt.Printf("Unable to find offset for action_KEY '%v'\n", key)
