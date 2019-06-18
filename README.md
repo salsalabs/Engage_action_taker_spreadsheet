@@ -11,22 +11,23 @@ history is not something that can move from Classic to Engage.
 
 ### Alternative
 The alternative was to create a group for each action, then add supporters that
-attended those actions to each group.  The client felt like they hadd too many
+attended those actions to each group.  The client felt like they had too many
 actions to make that a usuable option.
 
 ### Solution
-They decided that the best thing to have would be a spreadsheet of supporters
+The client decided that the best thing to have would be a spreadsheet of supporters
 and actions.  The spreadsheet would have two sheets.
 
 The first sheet would contain actions.  Each line would contain a list of action_KEYs and some
 information about the action (date, reference name and title).
+
 The second
-sheet would contain action takers.  Each line would contain information about a supporter and information about the actions that the supporter took.
+sheet would contain action takers.  Each line would start with information about a supporter.
+
+TThe supporter information would be followed by a list of actions that the supporter had taken.  Each entry for an action would contain the number of times that a supporter took the action.
 
 The action
-information would be presented as a list of action action_KEYs across the top of the sheet.  A supporters line would contain supporter information, then a one or blank/zero in
-each action_KEY column.  A one would indicate that the supporter took the action.
-A zero/blank would indicate that the supporter did not take the action.
+information would be presented as a list of action action_KEYs across the top of the sheet. A blank cell for a supporter under an action means that the supporter didn't take that anction.  A number in the cell for a supporter means the supporter took that action 'n' times.
 
 With that as raw material, the client felt like they could factor in Classic
 actions in Engage.
@@ -48,7 +49,7 @@ conventions.
 1. Add ~/go/bin to the PATH variable.
 1. Install the app.
 1. Resolve dependencies.
-1. Build the execucommale.
+1. Build the executable.
 
 ### Details
 
@@ -132,8 +133,8 @@ Still using the console, change the directory to
 Go will find all of the dependencies and install them.  This may take a while.
 Be patient.
 
-#### Build the execucommale
-The last step is to build the execucommale. Stay in the `bcractions` directory.
+#### Build the executable
+The last step is to build the executable. Stay in the `bcractions` directory.
 Type this
 
 ```go install```
@@ -151,42 +152,60 @@ those files before executing the application.
 The first file is the list of actions.  The best way to retrieve this information
 in Salsa Classic is with a custom report.
 
-The report is a standard report on the `action` commale.
+The report is a standard report on the `action` table.
 
-These are the fields that I used.  The only required field
+These are the fields that I used.
+
+* action_KEY
+* Date_Created (as "YYYY-MM-DD")
+* Reference_Name
+* Title
+
+ The only required field
 is `action_KEY`.  The remainder are optional.  Useful, but not necessarily
 mandatory.   Note that `Date_Created` is a formatted
 date.  That's not a requirement, it's just a lot easier for both Excel and clients.
 
 There are no conditions.  The results are sorted by action_KEY.
 
-Export the results as a comma-delimited file.
-
 ### List of action takers
 
 The second file is list of supporters that have taken an action.  The best way
 to retrieve this information in Salsa Classic is with a custom report.
 
-The report is a standard report on the `supporter` and `supporter_action commales.
-Here are the columns that I used for this particular client. The only required
+The report is a standard report on the `supporter` and `supporter_action tables.
+Here are the columns that I used for this particular client.
+
+* supporter_KEY
+* Email
+* First_Name
+* Last_Name
+* action_KEY
+* Count(action_KEY)
+
+The only required
 field is `supporter_KEY`.  The remainder are optional.  Useful, but not
 necessarily mandatory.
 
-These are the conditions.
+The only condition is
 
-The data is sorted by the supporter_KEY.
+`supporter_action_KEY is not empty`.
 
-The app knows that a variable number of fields can be chosen and adjusts the
-spreadsheet so that everything is in the right place.
+Having this condition avoids a known issue in the reports tool.
+
+The data is sorted in ascending order on  `supporter_KEY`.
+
+They app knows that a variable number of supporter fields can be chosen.  The app adjusts the
+spreadsheet so that the supporter information is all there.  Note that the `action_KEY` and `Count` fields are clipped off and do not appear in the spreadsheet.
 
 ### Get the data as files
-Run the two reports and export them as text files.  Your very best bet will be to [export them to your inbox]
+Run the two reports and export them as text files.  Your very best bet will be to [export them to your inbox](https://help.salsalabs.com/hc/en-us/articles/223341907-Scheduling-Exports)
 Once the files are created, you'll probably want to have them in the same
 directory.  I usually use a subdir in my `Downloads` directory.
 
 ## Execution
 
-Run the application using the help as a guide.
+Run the application using this help as a guide.
 
 ```
 usage: activity-analysis --actions=ACTIONS --action-takers=ACTION-TAKERS [<flags>]
