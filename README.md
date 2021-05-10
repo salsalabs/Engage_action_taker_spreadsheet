@@ -1,6 +1,6 @@
 # Actions analysis spreadsheet
 
-A go application to correlate actions and actions action takers in an Excel spreadsheet.
+A Go application to correlate actions and actions action takers in an Excel spreadsheet.
 
 ## Background
 
